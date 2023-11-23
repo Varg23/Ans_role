@@ -1,0 +1,31 @@
+---
+# tasks file for apache
+
+- name: Install Apache and PHP
+  apt:
+    name:
+      - apache2
+      - php
+      - libapache2-mod-php
+      - php-mysql
+    state: present
+  become: yes
+
+- name: Restart Apache
+  service:
+    name: apache2
+    state: restarted
+  become: yes
+
+- name: Set up 000-default.conf using the template
+  template:
+    src: "{{ role_path }}/templates/000-default.conf.j2"
+    dest: "/etc/apache2/sites-available/000-default.conf"
+  become: yes
+
+- name: Restart Apache
+  service:
+    name: apache2
+    state: restarted
+  become: yes
+

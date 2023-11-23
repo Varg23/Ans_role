@@ -1,0 +1,34 @@
+---
+# tasks file for mysql-import
+
+- name: Create destination directory if it doesn't exist
+  ansible.builtin.file:
+    path: "/src/sqlfiles"
+    state: directory
+  become: yes
+
+- name: Copy SQL file to remote server
+  ansible.builtin.copy:
+    src: "{{ role_path }}/files/bloodbank.sql"
+    dest: "/src/sqlfiles/bloodbank.sql"
+  become: yes
+  
+- name: Import MySQL Database
+  mysql_db:
+    login_user: root
+    login_password: null
+    name: bloodbank
+    state: import
+    target: /src/sqlfiles/bloodbank.sql
+  become: yes
+  ignore_errors: yes
+  
+- name: Restart MySQL Service
+  service:
+    name: mysql
+    state: restarted
+  become: yes
+
+- name: Pause for 30 seconds
+  pause:
+    seconds: 30

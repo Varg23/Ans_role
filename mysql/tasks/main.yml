@@ -1,0 +1,48 @@
+---
+# tasks file for mysql
+
+- name: Install MySQL Server version
+  apt:
+    name: mysql-server
+    state: present
+    update_cache: yes
+  become: yes
+
+- name: Copy MySQL configuration file
+  copy:
+    src: "{{ role_path }}/files/mysqld.cnf"
+    dest: /etc/mysql/mysql.conf.d/mysqld.cnf
+  notify: Restart MySQL
+  become: yes
+
+- name: Allow local connecttion
+  ansible.builtin.command: "sudo mysql -NBe 'ALTER USER \"root\"@\"localhost\" IDENTIFIED WITH mysql_native_password BY \"\"; FLUSH PRIVILEGES;'"
+  become: yes
+  
+- name: Allow remote connection for root
+  mysql_user:
+    name: root
+    host: "%"
+    password: null
+    priv: "*.*:ALL,GRANT"
+    state: present
+  become: yes
+
+- name: Create Database
+  mysql_db:
+    name: bloodbank
+    login_user: root
+    login_password: null
+    state: present
+    check_implicit_admin: true
+  become: yes
+
+- name: Grant privileges to root on bloodbank database
+  mysql_user:
+    name: root
+    host: "%"
+    password: null
+    priv: "bloodbank.*:ALL"
+    state: present
+  become: yes
+

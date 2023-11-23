@@ -1,0 +1,5 @@
+---
+# defaults file for mysql-import
+
+mysql_database: bloodbank
+dump_file: /src/sqlfiles/bloodbank.sql

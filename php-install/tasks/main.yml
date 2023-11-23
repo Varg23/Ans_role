@@ -1,0 +1,11 @@
+---
+# tasks file for php-install
+
+- name: Install PHP
+  apt:
+    name:
+      - php
+      - php-cli
+      - php-common
+    state: present
+  become: yes

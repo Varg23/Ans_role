@@ -1,0 +1,12 @@
+---
+
+- hosts: db_servers
+  roles:
+    - mysql
+    - mysql-import
+
+- hosts: web_servers
+  roles:
+    - apache
+    - php-install
+    - file-transfer
