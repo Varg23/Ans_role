@@ -1,0 +1,13 @@
+---
+# tasks file for file-transfer
+
+- name: Check if files exist on remote
+  ansible.builtin.stat:
+    path: "/app/css"
+  register: css_dir
+
+- name: Copy files from local to remote if not exist
+  ansible.builtin.copy:
+    src: "{{ role_path }}/files/"
+    dest: /app
+  become: yes
